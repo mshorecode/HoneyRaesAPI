@@ -107,11 +107,13 @@ app.MapGet("/servicetickets", () =>
 app.MapGet("/servicetickets/{id}", (int id) =>
 {
     ServiceTicket serviceTicket = serviceTickets.FirstOrDefault(st => st.Id == id);
+    Customer customer = customers.FirstOrDefault(c => c.Id == id);
     if (serviceTicket == null)
     {
         return Results.NotFound();
     }
     serviceTicket.Employee = employees.FirstOrDefault(e => e.Id == serviceTicket.EmployeeId);
+    serviceTicket.Customer = customers.FirstOrDefault(c => c.Id == serviceTicket.CustomerId);
     return Results.Ok(serviceTicket);
 });
 
@@ -127,6 +129,7 @@ app.MapGet("/customers/{id}", (int id) =>
     {
         return Results.NotFound();
     }
+    customer.ServiceTickets = serviceTickets.Where(st => st.CustomerId == id).ToList();
     return Results.Ok(customer);
 });
 
@@ -144,6 +147,35 @@ app.MapGet("/employees/{id}", (int id) =>
     }
     employee.ServiceTickets = serviceTickets.Where(st => st.EmployeeId == id).ToList();
     return Results.Ok(employee);
+});
+
+app.MapPost("/servicetickets", (ServiceTicket serviceTicket) =>
+{
+    serviceTicket.Id = serviceTickets.Max(st  => st.Id) + 1;
+    serviceTickets.Add(serviceTicket);
+    return serviceTicket;
+});
+
+app.MapDelete("/servicetickets/{id}", (int id) => 
+{ 
+    ServiceTicket serviceTicket = serviceTickets.FirstOrDefault(st  => st.Id == id);
+    serviceTickets.Remove(serviceTicket);
+});
+
+app.MapPut("/servicetickets/{id}", (int id, ServiceTicket serviceTicket) =>
+{ 
+    ServiceTicket ticketToUpdate = serviceTickets.FirstOrDefault(st  => st.Id == id);
+    int ticketIndex = serviceTickets.IndexOf(ticketToUpdate);
+    if (ticketToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+    if (id != serviceTicket.Id)
+    {
+        return Results.BadRequest();
+    }
+    serviceTickets[ticketIndex] = serviceTicket;
+    return Results.Ok();
 });
 
 app.Run();

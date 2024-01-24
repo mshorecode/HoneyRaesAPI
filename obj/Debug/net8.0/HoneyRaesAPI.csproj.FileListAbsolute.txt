@@ -31,3 +31,4 @@ C:\Users\Ryan\workspace\csharp\HoneyRaesAPI\obj\Debug\net8.0\refint\HoneyRaesAPI
 C:\Users\Ryan\workspace\csharp\HoneyRaesAPI\obj\Debug\net8.0\HoneyRaesAPI.pdb
 C:\Users\Ryan\workspace\csharp\HoneyRaesAPI\obj\Debug\net8.0\HoneyRaesAPI.genruntimeconfig.cache
 C:\Users\Ryan\workspace\csharp\HoneyRaesAPI\obj\Debug\net8.0\ref\HoneyRaesAPI.dll
+C:\Users\Ryan\workspace\csharp\HoneyRaesAPI\obj\Debug\net8.0\HoneyRaesAPI.sourcelink.json
