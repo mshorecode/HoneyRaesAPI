@@ -164,8 +164,11 @@ app.MapDelete("/servicetickets/{id}", (int id) =>
 
 app.MapPut("/servicetickets/{id}", (int id, ServiceTicket serviceTicket) =>
 { 
+    // ticketToUpdate searches through the ServiceTicket list and finds the first Service Ticket that matches the id provided
     ServiceTicket ticketToUpdate = serviceTickets.FirstOrDefault(st  => st.Id == id);
+    // gets the zero based index of ticketToUpdate
     int ticketIndex = serviceTickets.IndexOf(ticketToUpdate);
+    // if statements to check the index received
     if (ticketToUpdate == null)
     {
         return Results.NotFound();
@@ -176,6 +179,12 @@ app.MapPut("/servicetickets/{id}", (int id, ServiceTicket serviceTicket) =>
     }
     serviceTickets[ticketIndex] = serviceTicket;
     return Results.Ok();
+});
+
+app.MapPost("/servicetickets/{id}/complete", (int id) =>
+{
+    ServiceTicket ticketToComplete = serviceTickets.FirstOrDefault(st => st.Id == id);
+    ticketToComplete.DateCompleted = DateTime.Today;
 });
 
 app.Run();
