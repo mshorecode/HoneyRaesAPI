@@ -122,8 +122,10 @@ app.MapGet("/api/servicetickets/{id}", (int id) =>
     {
         return Results.NotFound();
     }
-    serviceTicket.Employee = employees.FirstOrDefault(e => e.Id == serviceTicket.EmployeeId);
-    serviceTicket.Customer = customers.FirstOrDefault(c => c.Id == serviceTicket.CustomerId);
+    serviceTicket.Employee = employees.Select(x => new Employee { Id = x.Id, Name = x.Name, Specialty = x.Specialty })
+    .FirstOrDefault(e => e.Id == serviceTicket.EmployeeId);
+    serviceTicket.Customer = customers.Select(x => new Customer { Id = x.Id, Name = x.Name, Address = x.Address })
+    .FirstOrDefault(c => c.Id == serviceTicket.CustomerId);
     return Results.Ok(serviceTicket);
 });
 
@@ -210,7 +212,7 @@ app.MapGet("/api/servicetickets/unassigned", () =>
 {
     List<ServiceTicket> unassignedTickets = serviceTickets.Where(st => st.EmployeeId == null).ToList();
 
-    return Results.Ok(unassignedTickets); 
+    return Results.Ok(unassignedTickets);
 });
 
 app.MapGet("/api/customers/inactive", () =>
@@ -235,7 +237,7 @@ app.MapGet("/api/employees/available", () =>
 
 });
 
-app.MapGet("/api/employees/{id}/customers", (int id) => 
+app.MapGet("/api/employees/{id}/customers", (int id) =>
 {
     var employeeCustomers = serviceTickets
         .Where(st => st.EmployeeId == id)
@@ -277,7 +279,7 @@ app.MapGet("/api/servicetickets/priority", () =>
     var priorityTickets = serviceTickets
         .Where(st => !st.DateCompleted.HasValue)
         .OrderByDescending(st => st.Emergency)
-        .ThenBy(st => st.EmployeeId.HasValue) 
+        .ThenBy(st => st.EmployeeId.HasValue)
         .ToList();
 
     foreach (var ticket in priorityTickets)
@@ -288,6 +290,5 @@ app.MapGet("/api/servicetickets/priority", () =>
 
     return Results.Ok(priorityTickets);
 });
-
 
 app.Run();
